@@ -44,7 +44,7 @@ namespace Minesweeper
     {
         public HumanPlayer()
         {
-            Name = "Human";
+            Name = "Human (you)";
             Renderer = new FancyRenderer();
             selfRender = true;
         }
@@ -136,7 +136,7 @@ namespace Minesweeper
     {
         public SimpleAIPlayer()
         {
-            Name = "Simple AI";
+            Name = "Simple AI (broken)";
             Renderer = new FancyRenderer();
         }
         public override PlayerReturn Play(Field.Tile[,] tiles, int remainingMines)
@@ -174,9 +174,9 @@ namespace Minesweeper
             {
                 return pr;
             }
-            for (int x = 0; x < tiles.GetLength(0); x++)
+            for (int y = 0; y < tiles.GetLength(0); y++)
             {
-                for (int y = 0; y < tiles.GetLength(1); y++)
+                for (int x = 0; x < tiles.GetLength(1); x++)
                 {
                     var tile = tiles[x, y];
                     if (tile.IsRevealed && tile.GetNeighborMineCount() > 0)

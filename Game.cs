@@ -115,12 +115,12 @@ namespace Minesweeper
         }
         public void Run()
         {
-            bool firstGame = true;
+            bool firstReveal = true;
             while (true)
             {
                 if (!Player.selfRender)
                     Renderer.Render(Field.Tiles, Field.Mines - Field.Flags);
-                var input = Player.Play(Field.Tiles, Field.Mines);
+                var input = Player.Play(Field.Tiles, Field.Mines - Field.Flags);
                 if (input.FlagPositions.Count > 0)
                 {
                     foreach (var flagPosition in input.FlagPositions)
@@ -141,13 +141,21 @@ namespace Minesweeper
                         tile.IsRevealed = true;
                         if (Field.MineField[revealPosition.Item1, revealPosition.Item2])
                         {
-                            if (firstGame)
+                            if (firstReveal)
                             {
                                 Field.MineField[revealPosition.Item1, revealPosition.Item2] = false;
-                                var rng = new Random();
-                                var x = rng.Next(0, Field.Width);
-                                var y = rng.Next(0, Field.Height);
-                                Field.MineField[x, y] = true;
+                                for (int y = 0; y < Field.Height; y++)
+                                {
+                                    for (int x = 0; x < Field.Width; x++)
+                                    {
+                                        if (!Field.MineField[x, y] && !Field.Tiles[x, y].IsRevealed)
+                                        {
+                                            Field.MineField[x, y] = true;
+                                            y = Field.Height + 1;
+                                            break;
+                                        }
+                                    }
+                                }
                                 for (int xx = 0; xx < Field.Width; xx++)
                                 {
                                     for (int yy = 0; yy < Field.Height; yy++)
@@ -155,23 +163,24 @@ namespace Minesweeper
                                         Field.Tiles[xx, yy] = new Field.Tile(Field.GetNeighborMineCount(xx, yy), xx, yy);
                                     }
                                 }
-                                firstGame = false;
+                                tile.IsRevealed = true;
+                                firstReveal = false;
                                 continue;
                             }
-                            if (!Player.selfRender)
-                                Renderer.Render(Field.Tiles, Field.Mines);
-                            Console.WriteLine("You lost!");
+                            // if (!Player.selfRender)
+                            Renderer.Render(Field.Tiles, Field.Mines - Field.Flags, Field.MineField);
+                            Renderer.Dialog("You lost!");
                             return;
                         }
                     }
+                    firstReveal = false;
                 }
                 if (checkWin())
                 {
-                    Renderer.Render(Field.Tiles, Field.Mines);
-                    Console.WriteLine("You won!");
+                    Renderer.Render(Field.Tiles, Field.Mines - Field.Flags, Field.MineField);
+                    Renderer.Dialog("You won!");
                     return;
                 }
-                firstGame = false;
             }
         }
         private bool checkWin()

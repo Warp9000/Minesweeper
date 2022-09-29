@@ -12,7 +12,10 @@
                 .Where(t => t.IsSubclassOf(typeof(BasePlayer)) && !t.IsAbstract)
                 .Select(t => (BasePlayer)Activator.CreateInstance(t)!)!;
 
-                System.Console.WriteLine("Select a player:");
+                System.Console.WriteLine("Welcome to Minesweeper!");
+                System.Console.WriteLine("Fullscreen is recommended.");
+                System.Console.WriteLine();
+                System.Console.WriteLine("Please select a player:");
                 foreach (BasePlayer p in players)
                 {
                     System.Console.WriteLine($"  {p.Name}");
@@ -20,7 +23,7 @@
                 int cursorPosition = 0;
                 BasePlayer? player = null;
                 Console.CursorVisible = false;
-                Console.SetCursorPosition(0, 1);
+                Console.SetCursorPosition(0, 4);
                 System.Console.WriteLine(">");
                 while (player == null)
                 {
@@ -29,10 +32,10 @@
                     {
                         if (cursorPosition > 0)
                         {
-                            Console.SetCursorPosition(0, cursorPosition + 1);
+                            Console.SetCursorPosition(0, cursorPosition + 4);
                             System.Console.Write(" ");
                             cursorPosition--;
-                            Console.SetCursorPosition(0, cursorPosition + 1);
+                            Console.SetCursorPosition(0, cursorPosition + 4);
                             System.Console.Write(">");
                         }
                     }
@@ -40,10 +43,10 @@
                     {
                         if (cursorPosition < players.Count() - 1)
                         {
-                            Console.SetCursorPosition(0, cursorPosition + 1);
+                            Console.SetCursorPosition(0, cursorPosition + 4);
                             System.Console.Write(" ");
                             cursorPosition++;
-                            Console.SetCursorPosition(0, cursorPosition + 1);
+                            Console.SetCursorPosition(0, cursorPosition + 4);
                             System.Console.Write(">");
                         }
                     }
@@ -89,7 +92,7 @@
                 var game = new Game(new Tuple<int, int>(sx, sy), mines, player);
                 Console.Clear();
                 game.Run();
-                Console.ReadKey(true);
+                // Console.ReadKey(true);
             }
         }
     }
