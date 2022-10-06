@@ -7,6 +7,57 @@
             while (true)
             {
                 Console.Clear();
+                IEnumerable<BaseGame> games = typeof(BaseGame)
+                .Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(BaseGame)) && !t.IsAbstract)
+                .Select(t => (BaseGame)Activator.CreateInstance(t)!)!;
+
+                System.Console.WriteLine("Welcome to Minesweeper!");
+                System.Console.WriteLine("Fullscreen is recommended.");
+                System.Console.WriteLine();
+                System.Console.WriteLine("Please select a gamemode:");
+                foreach (BaseGame g in games)
+                {
+                    System.Console.WriteLine($"  {g.Name}");
+                }
+                int cursorPosition = 0;
+                BaseGame? game = null;
+                Console.CursorVisible = false;
+                Console.SetCursorPosition(0, 4);
+                System.Console.WriteLine(">");
+                while (game == null)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        if (cursorPosition > 0)
+                        {
+                            Console.SetCursorPosition(0, cursorPosition + 4);
+                            System.Console.Write(" ");
+                            cursorPosition--;
+                            Console.SetCursorPosition(0, cursorPosition + 4);
+                            System.Console.Write(">");
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        if (cursorPosition < games.Count() - 1)
+                        {
+                            Console.SetCursorPosition(0, cursorPosition + 4);
+                            System.Console.Write(" ");
+                            cursorPosition++;
+                            Console.SetCursorPosition(0, cursorPosition + 4);
+                            System.Console.Write(">");
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.Enter)
+                    {
+                        game = games.ElementAt(cursorPosition);
+                    }
+                }
+                Console.Clear();
+
+
                 IEnumerable<BasePlayer> players = typeof(BasePlayer)
                 .Assembly.GetTypes()
                 .Where(t => t.IsSubclassOf(typeof(BasePlayer)) && !t.IsAbstract)
@@ -20,7 +71,7 @@
                 {
                     System.Console.WriteLine($"  {p.Name}");
                 }
-                int cursorPosition = 0;
+                cursorPosition = 0;
                 BasePlayer? player = null;
                 Console.CursorVisible = false;
                 Console.SetCursorPosition(0, 4);
@@ -56,6 +107,7 @@
                     }
                 }
                 Console.Clear();
+                Console.CursorVisible = true;
                 Console.WriteLine("Enter the size of the playfield, comma seperated x,y, max at current console size is " + (Console.WindowWidth - 10) / 5 + "," + (Console.WindowHeight - 6) / 3);
                 int sx = 0;
                 int sy = 0;
@@ -89,10 +141,10 @@
                         continue;
                     }
                 }
-                var game = new Game(new Tuple<int, int>(sx, sy), mines, player);
                 Console.Clear();
-                game.Run();
-                // Console.ReadKey(true);
+                Console.CursorVisible = false;
+                var gameC = new GameController(game, new Tuple<int, int>(sx, sy), mines, player);
+                gameC.Run();
             }
         }
     }
