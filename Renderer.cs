@@ -8,7 +8,7 @@ namespace Minesweeper
         /// Used by the player to highlight a tile.
         /// </summary>
         public abstract void Highlight(int x, int y);
-
+        public abstract (int, int) GetHighlightPos();
         public abstract void Dialog(string message);
     }
     public class SimpleRenderer : BaseRenderer
@@ -25,13 +25,13 @@ namespace Minesweeper
                     var tile = tiles[x, y];
                     if (tile.IsRevealed)
                     {
-                        if (tile.GetNeighborMineCount() == 0)
+                        if (tile.NeighborMines == 0)
                         {
                             Console.Write(" ");
                         }
                         else
                         {
-                            Console.Write(tile.GetNeighborMineCount());
+                            Console.Write(tile.NeighborMines);
                         }
                     }
                     else if (tile.IsFlagged)
@@ -50,6 +50,10 @@ namespace Minesweeper
         {
             Console.SetCursorPosition(x, y + 1);
         }
+        public override (int, int) GetHighlightPos()
+        {
+            return (Console.CursorLeft, Console.CursorTop - 1);
+        }
         public override void Dialog(string message)
         {
             Console.WriteLine(message);
@@ -58,6 +62,7 @@ namespace Minesweeper
     public class FancyRenderer : BaseRenderer
     {
         private Field.Tile[,] Tiles = null!;
+        private Field.Tile[,] LastTiles = null!;
         private Dictionary<int, ConsoleColor> Colors = new Dictionary<int, ConsoleColor>()
         {
             { 0, ConsoleColor.White },
@@ -99,7 +104,7 @@ namespace Minesweeper
             {
                 for (int x = 0; x < Tiles.GetLength(0); x++)
                 {
-                    int n = Tiles[x, y].GetNeighborMineCount();
+                    int n = Tiles[x, y].NeighborMines;
                     Console.SetCursorPosition(center.Item1 + (x - Tiles.GetLength(0) / 2) * 5, center.Item2 + (y - Tiles.GetLength(1) / 2) * 3);
                     if (mines != null && mines[x, y])
                     {
@@ -113,6 +118,10 @@ namespace Minesweeper
                         Console.Write("└───┘");
                         continue;
                     }
+                    // if (LastTiles != null && Tiles[x, y].Equals(LastTiles[x, y]))
+                    // {
+                    //     continue;
+                    // }
                     if (Tiles[x, y].IsRevealed)
                     {
                         if (n == 0)
@@ -161,6 +170,7 @@ namespace Minesweeper
             }
             if (mines == null)
                 Highlight(lastHighlight.Item1, lastHighlight.Item2);
+            LastTiles = Tiles;
         }
         private (int, int) lastHighlight = (-1, -1);
         public override void Highlight(int x, int y)
@@ -177,7 +187,7 @@ namespace Minesweeper
                     Console.SetCursorPosition(center.Item1 + (lastHighlight.Item1 - Tiles.GetLength(0) / 2) * 5, center.Item2 + (lastHighlight.Item2 - Tiles.GetLength(1) / 2) * 3);
                     if (Tiles[lastHighlight.Item1, lastHighlight.Item2].IsRevealed)
                     {
-                        if (Tiles[lastHighlight.Item1, lastHighlight.Item2].GetNeighborMineCount() == 0)
+                        if (Tiles[lastHighlight.Item1, lastHighlight.Item2].NeighborMines == 0)
                         {
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.Write("     ");
@@ -190,11 +200,11 @@ namespace Minesweeper
                         }
                         else
                         {
-                            Console.ForegroundColor = Colors[Tiles[lastHighlight.Item1, lastHighlight.Item2].GetNeighborMineCount()];
+                            Console.ForegroundColor = Colors[Tiles[lastHighlight.Item1, lastHighlight.Item2].NeighborMines];
                             Console.Write("     ");
                             Console.CursorTop++;
                             Console.CursorLeft -= 5;
-                            Console.Write("  " + Tiles[lastHighlight.Item1, lastHighlight.Item2].GetNeighborMineCount() + "  ");
+                            Console.Write("  " + Tiles[lastHighlight.Item1, lastHighlight.Item2].NeighborMines + "  ");
                             Console.CursorTop++;
                             Console.CursorLeft -= 5;
                             Console.Write("     ");
@@ -233,11 +243,11 @@ namespace Minesweeper
             // Console.ForegroundColor = ConsoleColor.Red;
             if (tile.IsRevealed)
             {
-                Console.ForegroundColor = Colors[tile.GetNeighborMineCount()];
+                Console.ForegroundColor = Colors[tile.NeighborMines];
                 Console.Write("╔═══╗");
                 Console.CursorTop++;
                 Console.CursorLeft -= 5;
-                Console.Write("║ " + (tile.GetNeighborMineCount() == 0 ? " " : tile.GetNeighborMineCount()) + " ║");
+                Console.Write("║ " + (tile.NeighborMines == 0 ? " " : tile.NeighborMines) + " ║");
                 Console.CursorTop++;
                 Console.CursorLeft -= 5;
                 Console.Write("╚═══╝");
@@ -265,6 +275,10 @@ namespace Minesweeper
                 Console.Write("╚═══╝");
             }
             lastHighlight = (x, y);
+        }
+        public override (int, int) GetHighlightPos()
+        {
+            return lastHighlight;
         }
         public override void Dialog(string message)
         {

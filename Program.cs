@@ -12,19 +12,39 @@
                 .Where(t => t.IsSubclassOf(typeof(BaseGame)) && !t.IsAbstract)
                 .Select(t => (BaseGame)Activator.CreateInstance(t)!)!;
 
-                System.Console.WriteLine("Welcome to Minesweeper!");
-                System.Console.WriteLine("Fullscreen is recommended.");
-                System.Console.WriteLine();
-                System.Console.WriteLine("Please select a gamemode:");
+                Console.WriteLine("Welcome to Minesweeper!");
+                Console.WriteLine("Fullscreen is recommended.");
+                Console.WriteLine();
+                Console.WriteLine("Please select a gamemode:");
                 foreach (BaseGame g in games)
                 {
-                    System.Console.WriteLine($"  {g.Name}");
+                    Console.WriteLine($"  {g.Name}");
                 }
                 int cursorPosition = 0;
                 BaseGame? game = null;
                 Console.CursorVisible = false;
                 Console.SetCursorPosition(0, 4);
-                System.Console.WriteLine(">");
+                Console.WriteLine(">");
+                string[] desc = games.ElementAt(cursorPosition).Description.Split("\n");
+                Console.SetCursorPosition(40, 4);
+                foreach (var item in desc)
+                {
+                    if (item.Length > Console.BufferWidth - 41)
+                    {
+                        int i = 0;
+                        while ((Console.BufferWidth - 41) * (i + 1) < item.Length)
+                        {
+                            Console.Write(item.Substring((Console.BufferWidth - 41) * i, Math.Min((Console.BufferWidth - 41) * (i + 1), item.Length)));
+                            Console.CursorLeft = 40;
+                            Console.CursorTop++;
+                        }
+                    }
+                    Console.Write(item + new string(' ', Console.BufferWidth - 41 - item.Length));
+                    Console.CursorLeft = 40;
+                    Console.CursorTop++;
+                    Console.Write(new string(' ', Console.BufferWidth - 41));
+                    Console.CursorLeft = 40;
+                }
                 while (game == null)
                 {
                     ConsoleKeyInfo key = Console.ReadKey(true);
@@ -33,10 +53,30 @@
                         if (cursorPosition > 0)
                         {
                             Console.SetCursorPosition(0, cursorPosition + 4);
-                            System.Console.Write(" ");
+                            Console.Write(" ");
                             cursorPosition--;
                             Console.SetCursorPosition(0, cursorPosition + 4);
-                            System.Console.Write(">");
+                            Console.Write(">");
+                            desc = games.ElementAt(cursorPosition).Description.Split("\n");
+                            Console.SetCursorPosition(40, 4);
+                            foreach (var item in desc)
+                            {
+                                if (item.Length > Console.BufferWidth - 41)
+                                {
+                                    int i = 0;
+                                    while ((Console.BufferWidth - 41) * (i + 1) < item.Length)
+                                    {
+                                        Console.Write(item.Substring((Console.BufferWidth - 41) * i, Math.Min((Console.BufferWidth - 41) * (i + 1), item.Length)));
+                                        Console.CursorLeft = 40;
+                                        Console.CursorTop++;
+                                    }
+                                }
+                                Console.Write(item + new string(' ', Console.BufferWidth - 41 - item.Length));
+                                Console.CursorLeft = 40;
+                                Console.CursorTop++;
+                                Console.Write(new string(' ', Console.BufferWidth - 41));
+                                Console.CursorLeft = 40;
+                            }
                         }
                     }
                     else if (key.Key == ConsoleKey.DownArrow)
@@ -44,10 +84,30 @@
                         if (cursorPosition < games.Count() - 1)
                         {
                             Console.SetCursorPosition(0, cursorPosition + 4);
-                            System.Console.Write(" ");
+                            Console.Write(" ");
                             cursorPosition++;
                             Console.SetCursorPosition(0, cursorPosition + 4);
-                            System.Console.Write(">");
+                            Console.Write(">");
+                            desc = games.ElementAt(cursorPosition).Description.Split("\n");
+                            Console.SetCursorPosition(40, 4);
+                            foreach (var item in desc)
+                            {
+                                if (item.Length > Console.BufferWidth - 41)
+                                {
+                                    int i = 0;
+                                    while ((Console.BufferWidth - 41) * (i + 1) < item.Length)
+                                    {
+                                        Console.Write(item.Substring((Console.BufferWidth - 41) * i, Math.Min((Console.BufferWidth - 41) * (i + 1), item.Length)));
+                                        Console.CursorLeft = 40;
+                                        Console.CursorTop++;
+                                    }
+                                }
+                                Console.Write(item + new string(' ', Console.BufferWidth - 41 - item.Length));
+                                Console.CursorLeft = 40;
+                                Console.CursorTop++;
+                                Console.Write(new string(' ', Console.BufferWidth - 41));
+                                Console.CursorLeft = 40;
+                            }
                         }
                     }
                     else if (key.Key == ConsoleKey.Enter)
@@ -63,19 +123,19 @@
                 .Where(t => t.IsSubclassOf(typeof(BasePlayer)) && !t.IsAbstract)
                 .Select(t => (BasePlayer)Activator.CreateInstance(t)!)!;
 
-                System.Console.WriteLine("Welcome to Minesweeper!");
-                System.Console.WriteLine("Fullscreen is recommended.");
-                System.Console.WriteLine();
-                System.Console.WriteLine("Please select a player:");
+                Console.WriteLine("Welcome to Minesweeper!");
+                Console.WriteLine("Fullscreen is recommended.");
+                Console.WriteLine();
+                Console.WriteLine("Please select a player:");
                 foreach (BasePlayer p in players)
                 {
-                    System.Console.WriteLine($"  {p.Name}");
+                    Console.WriteLine($"  {p.Name}");
                 }
                 cursorPosition = 0;
                 BasePlayer? player = null;
                 Console.CursorVisible = false;
                 Console.SetCursorPosition(0, 4);
-                System.Console.WriteLine(">");
+                Console.WriteLine(">");
                 while (player == null)
                 {
                     ConsoleKeyInfo key = Console.ReadKey(true);
@@ -84,10 +144,10 @@
                         if (cursorPosition > 0)
                         {
                             Console.SetCursorPosition(0, cursorPosition + 4);
-                            System.Console.Write(" ");
+                            Console.Write(" ");
                             cursorPosition--;
                             Console.SetCursorPosition(0, cursorPosition + 4);
-                            System.Console.Write(">");
+                            Console.Write(">");
                         }
                     }
                     else if (key.Key == ConsoleKey.DownArrow)
@@ -95,10 +155,10 @@
                         if (cursorPosition < players.Count() - 1)
                         {
                             Console.SetCursorPosition(0, cursorPosition + 4);
-                            System.Console.Write(" ");
+                            Console.Write(" ");
                             cursorPosition++;
                             Console.SetCursorPosition(0, cursorPosition + 4);
-                            System.Console.Write(">");
+                            Console.Write(">");
                         }
                     }
                     else if (key.Key == ConsoleKey.Enter)

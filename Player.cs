@@ -56,7 +56,7 @@ namespace Minesweeper
             {
                 for (int x = 0; x < tiles.GetLength(0); x++)
                 {
-                    if (tiles[x, y].GetNeighborMineCount() == 0)
+                    if (tiles[x, y].NeighborMines == 0)
                     {
                         var neighbors = new List<Tuple<int, int>>();
                         for (int i = -1; i <= 1; i++)
@@ -146,7 +146,7 @@ namespace Minesweeper
             {
                 for (int x = 0; x < tiles.GetLength(0); x++)
                 {
-                    if (tiles[x, y].GetNeighborMineCount() == 0)
+                    if (tiles[x, y].NeighborMines == 0)
                     {
                         var neighbors = new List<Tuple<int, int>>();
                         for (int i = -1; i <= 1; i++)
@@ -179,11 +179,11 @@ namespace Minesweeper
                 for (int x = 0; x < tiles.GetLength(0); x++)
                 {
                     var tile = tiles[x, y];
-                    if (tile.IsRevealed && tile.GetNeighborMineCount() > 0)
+                    if (tile.IsRevealed && tile.NeighborMines > 0)
                     {
                         var neighbors = GetNeighbors(x, y, tiles);
                         var flaggedNeighbors = neighbors.Where(n => n.IsFlagged).Count();
-                        if (flaggedNeighbors == tile.GetNeighborMineCount())
+                        if (flaggedNeighbors == tile.NeighborMines)
                         {
                             foreach (var neighbor in neighbors)
                             {
