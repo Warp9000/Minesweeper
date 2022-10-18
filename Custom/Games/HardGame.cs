@@ -1,39 +1,15 @@
-namespace Minesweeper
+namespace Minesweeper.Custom.Games
 {
-    public abstract class BaseGame
+    public class HardGame : BaseGame
     {
-        public abstract string Name { get; }
-        public abstract string Description { get; }
-        public Field Field = new Field(0, 0, 0);
-        public BaseRenderer Renderer = new FancyRenderer();
-        public BasePlayer Player = new HumanPlayer();
-        public bool Finished = false;
-        public bool? Won = null;
-        public abstract void PlayRound();
-    }
-
-    public class DefaultGame : BaseGame
-    {
-        public override string Name => "Default";
-        public override string Description => "The default game of Minesweeper";
+        public override string Name => "Hard";
+        public override string Description => "A harder version of Minesweeper\n - No flags";
         private bool firstReveal = true;
         public override void PlayRound()
         {
             if (!Player.selfRender)
                 Renderer.Render(Field.GenerateHiddenField(), Field.Mines - Field.Flags);
             var input = Player.Play(Field.GenerateHiddenField(), Field.Mines - Field.Flags);
-            if (input.FlagPositions.Count > 0)
-            {
-                foreach (var flagPosition in input.FlagPositions)
-                {
-                    if (Field.Tiles[flagPosition.Item1, flagPosition.Item2].IsRevealed)
-                    {
-                        continue;
-                    }
-                    Field.Tiles[flagPosition.Item1, flagPosition.Item2].IsFlagged = !Field.Tiles[flagPosition.Item1, flagPosition.Item2].IsFlagged;
-                    Field.Flags += Field.Tiles[flagPosition.Item1, flagPosition.Item2].IsFlagged ? 1 : -1;
-                }
-            }
             if (input.RevealPositions.Count > 0)
             {
                 foreach (var revealPosition in input.RevealPositions)
@@ -70,7 +46,6 @@ namespace Minesweeper
                         }
                         // if (!Player.selfRender)
                         Renderer.Render(Field.Tiles, Field.Mines - Field.Flags, Field.MineField);
-                        Renderer.Highlight(revealPosition.Item1, revealPosition.Item2);
                         Renderer.Dialog("You lost!");
                         Finished = true;
                         Won = false;
