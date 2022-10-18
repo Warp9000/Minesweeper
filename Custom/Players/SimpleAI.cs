@@ -106,7 +106,7 @@ namespace Minesweeper.Custom.Players
                 var rng = new Random();
                 var x = rng.Next(tiles.GetLength(0));
                 var y = rng.Next(tiles.GetLength(1));
-                while (tiles[x, y].IsRevealed)
+                while (tiles[x, y].IsRevealed || tiles[x, y].IsFlagged)
                 {
                     x = rng.Next(tiles.GetLength(0));
                     y = rng.Next(tiles.GetLength(1));
