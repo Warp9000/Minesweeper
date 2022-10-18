@@ -2,13 +2,29 @@ namespace Minesweeper
 {
     public abstract class BaseRenderer
     {
+        /// <summary>
+        /// Renders the field.
+        /// </summary>
+        /// <param name="tiles">The tiles to render</param>
+        /// <param name="remainingMines">How many tiles left to show</param>
+        /// <param name="mines">The minefield to be given by the game when it is finished</param>
         public abstract void Render(Field.Tile[,] tiles, int remainingMines, bool[,]? mines = null);
 
         /// <summary>
         /// Used by the player to highlight a tile.
         /// </summary>
         public abstract void Highlight(int x, int y);
+
+        /// <summary>
+        /// Gets the coordinates of the tile the player has highlighted.
+        /// </summary>
+        /// <returns>A tuple of the x and y coordinates</returns>
         public abstract (int, int) GetHighlightPos();
+
+        /// <summary>
+        /// Draws a message to the screen.
+        /// </summary>
+        /// <param name="message"></param>
         public abstract void Dialog(string message);
     }
     public class SimpleRenderer : BaseRenderer

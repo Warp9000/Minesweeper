@@ -31,9 +31,21 @@ namespace Minesweeper
     /// </summary>
     public class PlayerReturn
     {
+        /// <summary>
+        /// A list of coordinates to flag.
+        /// </summary>
         public List<(int, int)> FlagPositions;
+
+        /// <summary>
+        /// A list of coordinates to reveal.
+        /// </summary>
         public List<(int, int)> RevealPositions;
 
+        /// <summary>
+        /// Represents what a player does in the game.
+        /// </summary>
+        /// <param name="revealPositions"></param>
+        /// <param name="flagPositions"></param>
         public PlayerReturn(List<(int, int)> revealPositions, List<(int, int)> flagPositions)
         {
             FlagPositions = flagPositions;

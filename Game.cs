@@ -1,14 +1,48 @@
 namespace Minesweeper
 {
+    /// <summary>
+    /// Represents a game of minesweeper.
+    /// </summary>
     public abstract class BaseGame
     {
+        /// <summary>
+        /// Name of the game.
+        /// </summary>
         public abstract string Name { get; }
+
+        /// <summary>
+        /// Description of the game. Telling the players the rules etc.
+        /// </summary>
         public abstract string Description { get; }
+
+        /// <summary>
+        /// The field to play on.
+        /// </summary>
         public Field Field = new Field(0, 0, 0);
+
+        /// <summary>
+        /// The renderer to use. Defaulted to <see cref="FancyRenderer"/>.
+        /// </summary>
         public BaseRenderer Renderer = new FancyRenderer();
+
+        /// <summary>
+        /// The player to play the game. Defaulted to <see cref="HumanPlayer"/>.
+        /// </summary>
         public BasePlayer Player = new HumanPlayer();
+
+        /// <summary>
+        /// A bool representing if the game is finished.
+        /// </summary>
         public bool Finished = false;
+
+        /// <summary>
+        /// A bool representing if the game is won. Only valid if <see cref="Finished"/> is true.
+        /// </summary>
         public bool? Won = null;
+
+        /// <summary>
+        /// Runs a round of the game.
+        /// </summary>
         public abstract void PlayRound();
     }
 

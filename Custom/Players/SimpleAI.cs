@@ -115,6 +115,14 @@ namespace Minesweeper.Custom.Players
             }
             return pr;
         }
+
+        /// <summary>
+        /// Makes an array of the neighbors of a tile
+        /// </summary>
+        /// <param name="x">The x coordinate of the tile</param>
+        /// <param name="y">The y coordinate of the tile</param>
+        /// <param name="tiles">The array of tiles</param>
+        /// <returns>An array of the neighbors of the tile</returns>
         public Field.Tile[] GetNeighbors(int x, int y, Field.Tile[,] tiles)
         {
             var neighbors = new List<Field.Tile>();

@@ -1,11 +1,14 @@
 namespace Minesweeper
 {
     /// <summary>
-    /// Represents a game of Minesweeper.
+    /// A controller for running several rounds of minesweeper.
     /// </summary>
     public class GameController
     {
         private BaseGame Game;
+        /// <summary>
+        /// A controller for running several rounds of minesweeper.
+        /// </summary>
         public GameController(BaseGame game, Tuple<int, int> size, int mines, BasePlayer player)
         {
             Game = game;
@@ -13,6 +16,9 @@ namespace Minesweeper
             Game.Player = player;
             Game.Renderer = player.Renderer;
         }
+        /// <summary>
+        /// Runs the game.
+        /// </summary>
         public void Run()
         {
             while (true)
