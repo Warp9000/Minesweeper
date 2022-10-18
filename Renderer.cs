@@ -26,6 +26,13 @@ namespace Minesweeper
         /// </summary>
         /// <param name="message"></param>
         public abstract void Dialog(string message);
+
+        /// <summary>
+        /// Draws several lines of text to the screen.
+        /// </summary>
+        /// <param name="message"></param>
+        public abstract void Dialog(string[] message);
+
     }
     public class SimpleRenderer : BaseRenderer
     {
@@ -73,6 +80,13 @@ namespace Minesweeper
         public override void Dialog(string message)
         {
             Console.WriteLine(message);
+        }
+        public override void Dialog(string[] message)
+        {
+            foreach (var line in message)
+            {
+                Console.WriteLine(line);
+            }
         }
     }
     public class FancyRenderer : BaseRenderer
@@ -317,6 +331,40 @@ namespace Minesweeper
             Console.CursorLeft -= width + 2;
             var msg = "Press Enter to continue";
             Console.Write("║" + new string(' ', (width - msg.Length) / 2) + msg + new string(' ', (width - msg.Length) / 2 + (width - msg.Length) % 2) + "║");
+            Console.CursorTop++;
+            Console.CursorLeft -= width + 2;
+            Console.Write("╚" + new string('═', width) + "╝");
+            while (true)
+            {
+                var cki = Console.ReadKey(true);
+                if (cki.Key == ConsoleKey.Enter)
+                    break;
+            }
+        }
+        public override void Dialog(string[] message)
+        {
+            var cSize = (Console.WindowWidth, Console.WindowHeight);
+            var center = (cSize.Item1 / 2 - 1, cSize.Item2 / 2);
+            int width = Math.Max(message.Max(x => x.Length) + 4, "Press Enter to continue".Length + 4);
+            Console.SetCursorPosition(center.Item1 - width / 2, center.Item2 - 1);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("╔" + new string('═', width) + "╗");
+            Console.CursorTop++;
+            Console.CursorLeft -= width + 2;
+            Console.Write("║" + new string(' ', width) + "║");
+            Console.CursorTop++;
+            Console.CursorLeft -= width + 2;
+            foreach (var msg in message)
+            {
+                Console.Write("║" + new string(' ', (width - msg.Length) / 2) + msg + new string(' ', (width - msg.Length) / 2 + (width - msg.Length) % 2) + "║");
+                Console.CursorTop++;
+                Console.CursorLeft -= width + 2;
+            }
+            Console.Write("║" + new string(' ', width) + "║");
+            Console.CursorTop++;
+            Console.CursorLeft -= width + 2;
+            var msg2 = "Press Enter to continue";
+            Console.Write("║" + new string(' ', (width - msg2.Length) / 2) + msg2 + new string(' ', (width - msg2.Length) / 2 + (width - msg2.Length) % 2) + "║");
             Console.CursorTop++;
             Console.CursorLeft -= width + 2;
             Console.Write("╚" + new string('═', width) + "╝");

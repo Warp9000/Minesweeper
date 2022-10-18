@@ -1,3 +1,4 @@
+using System.Diagnostics;
 namespace Minesweeper
 {
     /// <summary>
@@ -51,11 +52,19 @@ namespace Minesweeper
         public override string Name => "Default";
         public override string Description => "The default game of Minesweeper";
         private bool firstReveal = true;
+        Stopwatch PlayerTimer = new Stopwatch();
+        Stopwatch GameTimer = new Stopwatch();
         public override void PlayRound()
         {
+            GameTimer.Start();
+            var hiddenField = Field.GenerateHiddenField();
             if (!Player.selfRender)
-                Renderer.Render(Field.GenerateHiddenField(), Field.Mines - Field.Flags);
-            var input = Player.Play(Field.GenerateHiddenField(), Field.Mines - Field.Flags);
+                Renderer.Render(hiddenField, Field.Mines - Field.Flags);
+            GameTimer.Stop();
+            PlayerTimer.Start();
+            var input = Player.Play(hiddenField, Field.Mines - Field.Flags);
+            PlayerTimer.Stop();
+            GameTimer.Start();
             if (input.FlagPositions.Count > 0)
             {
                 foreach (var flagPosition in input.FlagPositions)
@@ -105,7 +114,11 @@ namespace Minesweeper
                         // if (!Player.selfRender)
                         Renderer.Render(Field.Tiles, Field.Mines - Field.Flags, Field.MineField);
                         Renderer.Highlight(revealPosition.Item1, revealPosition.Item2);
-                        Renderer.Dialog("You lost!");
+                        List<string> msg = new List<string>();
+                        msg.Add("You lost!");
+                        msg.Add($"You took {PlayerTimer.ElapsedMilliseconds}ms to play.");
+                        msg.Add($"The game took {GameTimer.ElapsedMilliseconds}ms compute.");
+                        Renderer.Dialog(msg.ToArray());
                         Finished = true;
                         Won = false;
                         return;
@@ -116,7 +129,12 @@ namespace Minesweeper
             if (checkWin())
             {
                 Renderer.Render(Field.Tiles, Field.Mines - Field.Flags, Field.MineField);
-                Renderer.Dialog("You won!");
+                GameTimer.Stop();
+                List<string> msg = new List<string>();
+                msg.Add("You won!");
+                msg.Add($"You took {PlayerTimer.ElapsedMilliseconds}ms to play the game.");
+                msg.Add($"The game took {GameTimer.ElapsedMilliseconds}ms compute.");
+                Renderer.Dialog(msg.ToArray());
                 Finished = true;
                 Won = true;
                 return;
