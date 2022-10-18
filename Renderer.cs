@@ -99,7 +99,7 @@ namespace Minesweeper
             (int, int) center = (cSize.Item1 / 2, cSize.Item2 / 2);
             Console.ResetColor();
             Console.SetCursorPosition(center.Item1 - ("Remaining mines: " + remainingMines).Length / 2, 0);
-            Console.WriteLine("Remaining mines: " + remainingMines);
+            Console.WriteLine("Remaining mines: " + remainingMines + "   ");
             for (int y = 0; y < Tiles.GetLength(1); y++)
             {
                 for (int x = 0; x < Tiles.GetLength(0); x++)
@@ -175,7 +175,7 @@ namespace Minesweeper
         private (int, int) lastHighlight = (-1, -1);
         public override void Highlight(int x, int y)
         {
-            if (x == -1 && y == -1)
+            if (x < 0 || y < 0 || x >= Tiles.GetLength(0) || y >= Tiles.GetLength(1))
                 return;
             Console.CursorVisible = false;
             (int, int) cSize = (Console.WindowWidth, Console.WindowHeight);
@@ -299,7 +299,8 @@ namespace Minesweeper
             Console.Write("║" + new string(' ', width) + "║");
             Console.CursorTop++;
             Console.CursorLeft -= width + 2;
-            Console.Write("║  " + "Press Enter to continue" + "  ║");
+            var msg = "Press Enter to continue";
+            Console.Write("║" + new string(' ', (width - msg.Length) / 2) + msg + new string(' ', (width - msg.Length) / 2 + (width - msg.Length) % 2) + "║");
             Console.CursorTop++;
             Console.CursorLeft -= width + 2;
             Console.Write("╚" + new string('═', width) + "╝");

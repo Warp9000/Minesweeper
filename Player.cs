@@ -58,7 +58,6 @@ namespace Minesweeper
                 {
                     if (tiles[x, y].NeighborMines == 0)
                     {
-                        var neighbors = new List<Tuple<int, int>>();
                         for (int i = -1; i <= 1; i++)
                         {
                             for (int j = -1; j <= 1; j++)
@@ -67,7 +66,6 @@ namespace Minesweeper
                                 {
                                     continue;
                                 }
-                                // neighbors.Add(new Tuple<int, int>(j, i));
                                 if (x + j >= 0
                                 && x + j < tiles.GetLength(0)
                                 && y + i >= 0
@@ -132,105 +130,5 @@ namespace Minesweeper
             cursorPosition = (Math.Clamp(cursorPosition.Item1, 0, size.Item1 - 1), Math.Clamp(cursorPosition.Item2, 0, size.Item2 - 1));
         }
     }
-    public sealed class SimpleAIPlayer : BasePlayer
-    {
-        public SimpleAIPlayer()
-        {
-            Name = "Simple AI (broken)";
-            Renderer = new FancyRenderer();
-        }
-        public override PlayerReturn Play(Field.Tile[,] tiles, int remainingMines)
-        {
-            var pr = new PlayerReturn(new List<(int, int)>(), new List<(int, int)>());
-            for (int y = 0; y < tiles.GetLength(1); y++)
-            {
-                for (int x = 0; x < tiles.GetLength(0); x++)
-                {
-                    if (tiles[x, y].NeighborMines == 0)
-                    {
-                        var neighbors = new List<Tuple<int, int>>();
-                        for (int i = -1; i <= 1; i++)
-                        {
-                            for (int j = -1; j <= 1; j++)
-                            {
-                                if (j == 0 && i == 0)
-                                {
-                                    continue;
-                                }
-                                // neighbors.Add(new Tuple<int, int>(j, i));
-                                if (x + j >= 0
-                                && x + j < tiles.GetLength(0)
-                                && y + i >= 0
-                                && y + i < tiles.GetLength(1)
-                                && !tiles[x + j, y + i].IsRevealed)
-                                    pr.RevealPositions.Add((x + j, y + i));
-                            }
-                        }
 
-                    }
-                }
-            }
-            if (pr.RevealPositions.Count != 0)
-            {
-                return pr;
-            }
-            for (int y = 0; y < tiles.GetLength(1); y++)
-            {
-                for (int x = 0; x < tiles.GetLength(0); x++)
-                {
-                    var tile = tiles[x, y];
-                    if (tile.IsRevealed && tile.NeighborMines > 0)
-                    {
-                        var neighbors = GetNeighbors(x, y, tiles);
-                        var flaggedNeighbors = neighbors.Where(n => n.IsFlagged).Count();
-                        if (flaggedNeighbors == tile.NeighborMines)
-                        {
-                            foreach (var neighbor in neighbors)
-                            {
-                                if (!neighbor.IsRevealed && !neighbor.IsFlagged)
-                                {
-                                    pr.RevealPositions.Add((neighbor.X, neighbor.Y));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (pr.RevealPositions.Count == 0)
-            {
-                for (int x = 0; x < tiles.GetLength(0); x++)
-                {
-                    for (int y = 0; y < tiles.GetLength(1); y++)
-                    {
-                        var tile = tiles[x, y];
-                        if (!tile.IsRevealed && !tile.IsFlagged)
-                        {
-                            pr.RevealPositions.Add((x, y));
-                            return pr;
-                        }
-                    }
-                }
-            }
-            return pr;
-        }
-        public Field.Tile[] GetNeighbors(int x, int y, Field.Tile[,] tiles)
-        {
-            var neighbors = new List<Field.Tile>();
-            for (int i = -1; i <= 1; i++)
-            {
-                for (int j = -1; j <= 1; j++)
-                {
-                    if (j == 0 && i == 0)
-                    {
-                        continue;
-                    }
-                    if (j >= 0 && j < tiles.GetLength(0) && i >= 0 && i < tiles.GetLength(1))
-                    {
-                        neighbors.Add(tiles[j, i]);
-                    }
-                }
-            }
-            return neighbors.ToArray();
-        }
-    }
 }

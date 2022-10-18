@@ -70,6 +70,7 @@ namespace Minesweeper
                         }
                         // if (!Player.selfRender)
                         Renderer.Render(Field.Tiles, Field.Mines - Field.Flags, Field.MineField);
+                        Renderer.Highlight(revealPosition.Item1, revealPosition.Item2);
                         Renderer.Dialog("You lost!");
                         Finished = true;
                         Won = false;
