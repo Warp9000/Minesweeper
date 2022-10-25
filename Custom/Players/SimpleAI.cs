@@ -102,14 +102,16 @@ namespace Minesweeper.Custom.Players
             }
             if (pr.RevealPositions.Count == 0 && pr.FlagPositions.Count == 0)
             {
-                Renderer.Dialog("I don't know what to do!");
+                // Renderer.Dialog("I don't know what to do!");
                 var rng = new Random();
                 var x = rng.Next(tiles.GetLength(0));
                 var y = rng.Next(tiles.GetLength(1));
-                while (tiles[x, y].IsRevealed || tiles[x, y].IsFlagged)
+                int i = 0;
+                while ((tiles[x, y].IsRevealed || tiles[x, y].IsFlagged) && i < 100)
                 {
                     x = rng.Next(tiles.GetLength(0));
                     y = rng.Next(tiles.GetLength(1));
+                    i++;
                 }
                 pr.RevealPositions.Add((x, y));
             }

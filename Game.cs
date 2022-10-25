@@ -54,12 +54,19 @@ namespace Minesweeper
         private bool firstReveal = true;
         Stopwatch PlayerTimer = new Stopwatch();
         Stopwatch GameTimer = new Stopwatch();
+        Stopwatch RenderTimer = new Stopwatch();
         public override void PlayRound()
         {
             GameTimer.Start();
             var hiddenField = Field.GenerateHiddenField();
             if (!Player.selfRender)
+            {
+                GameTimer.Stop();
+                RenderTimer.Start();
                 Renderer.Render(hiddenField, Field.Mines - Field.Flags);
+                RenderTimer.Stop();
+                GameTimer.Start();
+            }
             GameTimer.Stop();
             PlayerTimer.Start();
             var input = Player.Play(hiddenField, Field.Mines - Field.Flags);
@@ -112,12 +119,18 @@ namespace Minesweeper
                             continue;
                         }
                         // if (!Player.selfRender)
+                        GameTimer.Stop();
+                        RenderTimer.Start();
                         Renderer.Render(Field.Tiles, Field.Mines - Field.Flags, Field.MineField);
                         Renderer.Highlight(revealPosition.Item1, revealPosition.Item2);
+                        RenderTimer.Stop();
+                        GameTimer.Start();
                         List<string> msg = new List<string>();
                         msg.Add("You lost!");
-                        msg.Add($"You took {PlayerTimer.ElapsedMilliseconds}ms to play.");
+                        msg.Add($"You took {PlayerTimer.ElapsedMilliseconds}ms to play." + (Player.selfRender ? " Including rendering" : ""));
                         msg.Add($"The game took {GameTimer.ElapsedMilliseconds}ms compute.");
+                        if (!Player.selfRender)
+                            msg.Add($"The renderer took {RenderTimer.ElapsedMilliseconds}ms to render.");
                         Renderer.Dialog(msg.ToArray());
                         Finished = true;
                         Won = false;
@@ -137,6 +150,13 @@ namespace Minesweeper
                 Renderer.Dialog(msg.ToArray());
                 Finished = true;
                 Won = true;
+                return;
+            }
+            if (input.RevealPositions.Count == 0 && input.FlagPositions.Count == 0)
+            {
+                GameTimer.Stop();
+                Won = false;
+                Finished = true;
                 return;
             }
         }
